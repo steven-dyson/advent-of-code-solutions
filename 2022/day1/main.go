@@ -4,8 +4,15 @@ import (
 	"bufio"
 	"log"
 	"os"
+	"sort"
 	"strconv"
 )
+
+type ElfInv struct {
+	Count int32
+	Total int32
+	Items []int32
+}
 
 func main() {
 	file, err := os.Open("./input.txt")
@@ -14,14 +21,7 @@ func main() {
 	}
 	defer file.Close()
 
-	type ElfInv struct {
-		Count int32
-		Total int32
-		Items []int32
-	}
-
 	var elves []ElfInv
-	var total int32
 	var current ElfInv
 
 	scanner := bufio.NewScanner(file)
@@ -39,16 +39,27 @@ func main() {
 			current.Items = append(current.Items, int32(value))
 		} else {
 			elves = append(elves, current)
-			total++
 			current = ElfInv{}
 		}
-
 	}
+
+	// Handle last elf
+	if current.Count > 0 {
+		elves = append(elves, current)
+	}
+
+	// Run part one result
+	partOneResult(elves)
+
+	// RUn part two result
+	partTwoResult(elves)
 
 	if err := scanner.Err(); err != nil {
 		log.Println("error reading file %b\n", err)
 	}
+}
 
+func partOneResult(elves []ElfInv) {
 	var highest int32
 
 	for _, elf := range elves {
@@ -57,6 +68,19 @@ func main() {
 		}
 	}
 
-	log.Println("Total Elves", total)
-	log.Println("Highest", highest)
+	log.Println("Part One", highest)
+}
+
+func partTwoResult(elves []ElfInv) {
+	total := int32(0)
+
+	sort.Slice(elves, func(i, j int) bool {
+		return elves[i].Total > elves[j].Total
+	})
+
+	for i := 0; i < 3 && i < len(elves); i++ {
+		total += elves[i].Total
+	}
+
+	log.Println("Part Two", total)
 }
