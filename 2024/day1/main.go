@@ -32,11 +32,11 @@ func main() {
 	partOne(colOne, colTwo)
 
 	// Part Two
-	// partTwo(colOne, colTwo)
+	partTwo(colOne, colTwo)
 }
 
 func toInt(value string) int64 {
-	new, err := strconv.ParseInt(value, 10, 32)
+	new, err := strconv.ParseInt(value, 10, 64)
 	if err != nil {
 		log.Println("error parsing number")
 		return 0
@@ -66,6 +66,20 @@ func partOne(colOne []int64, colTwo []int64) {
 	log.Println("Day One Result", result)
 }
 
-func partTwo() {
-	log.Println("Part Two Result")
+func partTwo(colOne []int64, colTwo []int64) {
+	var result int64
+
+	for _, oneValue := range colOne {
+		var foundTimes int64
+
+		for _, twoValue := range colTwo {
+			if oneValue == twoValue {
+				foundTimes++
+			}
+		}
+
+		result += int64(oneValue) * foundTimes
+	}
+
+	log.Println("Part Two Result", result)
 }
