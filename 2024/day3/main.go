@@ -4,50 +4,34 @@ import (
 	"bufio"
 	"log"
 	"os"
-	"strings"
+	"regexp"
 	"strconv"
 )
 
 func main() {
-	file, err := os.Open("./sample.txt")
+	file, err := os.Open("./input.txt")
 	if err != nil {
 		log.Panicln("error reading input file")
 	}
 
-	log.Println("Test")
-	var expressions []string
+	result := 0
 
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		line := scanner.Text()
-		log.Println("Line", line)
+		regex := regexp.MustCompile(`mul\((\d{1,3}),(\d{1,3})\)`)
+		matches := regex.FindAllStringSubmatch(line, -1)
 
-		chars := strings.Split(line, "")
-		//var instruction string
-
-		for i, char := range chars {
-			log.Println("Char", char)
-			isValid := getMul(chars[i:i+8])	
-
-			if isValid {
-				expressions = append(expressions, strings.Join(chars[i:i+12], ""))
-			}
-				
-			log.Println("Valid", isValid)
+		for _, match := range matches {
+			firstValue, _ := strconv.Atoi(match[1])
+			secondValue, _ := strconv.Atoi(match[2])
+			result += firstValue * secondValue // expressions = append(expressions, match)
 		}
 	}
-	log.Println("EXPS", expressions)
-}
-
-func getMul(str []string) bool {
-	if str[0] = "m" && str[1] == "u" && str[2] == "l" && str[3] == "(" {
-		remaining := str[4:len(str)]
-		for _, char := range str
-	}
+	log.Println("Day One Result", result)
 }
 
 func isInteger(str string) bool {
 	_, err := strconv.Atoi(str)
 	return err == nil
 }
-
